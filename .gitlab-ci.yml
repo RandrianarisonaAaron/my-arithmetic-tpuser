@@ -27,6 +27,7 @@ before_script:
 #- source `poetry env info --path`/bin/activate
 - poetry lock --no-update
 - poetry install
+- apt-get update && apt-get upgrade -y
 
 unit-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
