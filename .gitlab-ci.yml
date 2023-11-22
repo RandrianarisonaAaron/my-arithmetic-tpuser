@@ -26,6 +26,7 @@ before_script:
 #- source `poetry env info --path`/bin/activate
 - poetry lock --no-update
 - poetry install
+- pip3 install tox
 - apt-get update && apt-get upgrade -y
 
 unit-test-job:   # This job runs in the test stage.
@@ -33,16 +34,7 @@ unit-test-job:   # This job runs in the test stage.
   tags:
     - test
   script:
-    - echo "Running unit tests... This will take about 60 seconds."
-    - sleep 60
-    - echo "Code coverage is 90%"
+    - tox
 
-lint-test-job:   # This job also runs in the test stage.
-  stage: test    # It can run at the same time as unit-test-job (in parallel).
-  tags:
-    - test
-  script:
-    - echo "Linting code... This will take about 10 seconds."
-    - sleep 10
-    - echo "No lint issues found."
+
 
