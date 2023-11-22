@@ -24,7 +24,7 @@ stages:          # List of stages for jobs, and their order of execution
 before_script:
 - pip install --upgrade pip
 - pip install poetry
-- source `poetry env info --path`/bin/activate
+#- source `poetry env info --path`/bin/activate
 - poetry install
 
 unit-test-job:   # This job runs in the test stage.
