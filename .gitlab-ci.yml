@@ -29,14 +29,14 @@ before_script:
 - pip3 install tox
 - apt-get update && apt-get upgrade -y
 
-unit-test-job:   # This job runs in the test stage.
+tox-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
   tags:
     - test
   script:
     - tox
 
-run-tests:
+coverage-tests-job:
   stage: test
   tags:
     - test
