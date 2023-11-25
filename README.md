@@ -1,6 +1,6 @@
 # Pre-config pour VM reseaux linux
 
-## gitlab-runner configuration:
+## (Ex1) gitlab-runner configuration:
 - choisir le bon package à:
 
 https://gitlab-runner-downloads.s3.amazonaws.com/latest/index.html
@@ -16,7 +16,7 @@ sudo dpkg -i package_file.deb
 sudo gitlab-runner start
 ```
 
-## poetry configuration:
+## (Ex2) poetry configuration:
 
 - installer poetry et tox:
 ```
@@ -56,14 +56,14 @@ poetry lock --no-update
 poetry install
 ```
 
-- pour lancer tox :
+- pour lancer tox , avec au préalable des fichiers de test dans le dossier tests:
 ```
 poetry shell
 tox
 ```
 
 
-# Runner configuration
+# (Ex3) Runner configuration
 
 ## creer un nouveau runner
 
@@ -122,7 +122,7 @@ run tests:
         path: coverage.xml
 ```
 
-# Deploiement automatique 
+# (Ex4) Deploiement automatique 
 
 ## poetry-dynamic-versioning configuration
 
@@ -190,3 +190,152 @@ develop_job:
     - ls dist/
 ```
 avec $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "develop" qui spécifie qu'on ne veut build que lorsqu'on est pas dans le main ou qu'on est dans la branche develop.
+
+# (Ex5) Mirroir gitlab et github
+tuto gitlab:
+https://dev.to/brunorobert/github-and-gitlab-sync-44mn
+
+- sur Gitlab:
+
+pour générer un Token gitlab:
+https://gitlab.univ-lr.fr/-/profile/personal_access_tokens
+
+Settings > Repository > Mirroring repositories > Add new
+url du repertoire en mirror doit avoir ce format :
+```
+Git repository URL: l'url du projet github
+Username: son nom d'utilisateur github
+Password:mettre son Token github
+```
+
+Dans Settings > Webhooks > add new webhook:
+```
+URL : l'url du projet github
+Secret token : le token github
+Trigger : push events,tag push event ,job events
+```
+Puis definir dans Settings > CI/CD > Variables > add variable , les variables d'acces:
+```
+ACCESS_TOKEN: en masked, le token github
+REMOTE_REPOSITORY_URL:en masked, {token_github}@{url_repertoire_github}
+```
+et rajouter un job dans gitlab-ci.yml:
+```
+sync-with-github:
+  before_script:
+    - git config --global user.name "${GITLAB_USER_NAME}"
+    - git config --global user.email "${GITLAB_USER_EMAIL}"
+  script:
+    - git remote add github $REMOTE_REPOSITORY_URL
+    - git checkout master
+    - git pull origin master
+    - git pull github master
+    - git status
+    - git push https://root:$ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:master
+
+```
+
+
+- sur github:
+
+Pour générer un Token github:
+https://github.com/settings/tokens
+
+
+il faut creer les secret suivants dans le repertoire (Secrets and variables > Actions > Secrets > New repository secret):
+```
+TARGET_URL value: l'url du repertoire gitlab
+TARGET_TOKEN value: token Gitlab 
+TARGET_USERNAME value: nom d'utilisateur Gitlab
+```
+
+Ensuite dans Actions > New Workflow > Simple Workflow > configure, rajouter le job :
+```
+name: GitlabSync
+
+on:
+  - push
+  - delete
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    name: Git Repo Sync
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: wangchucheng/git-repo-sync@v0.1.0
+      with:
+        target-url: ${{ secrets.TARGET_URL }}
+        target-username: ${{ secrets.TARGET_USERNAME }}
+        target-token: ${{ secrets.TARGET_TOKEN }}
+
+```
+
+Dans Settings > Webhooks > add webhooks:
+```
+Payload_Url: https://gitlab.com/api/v4/projects/{id_projet_gitlab}/mirror/pull
+Content Type: application/json
+SSL Verification: off
+Secret : token gitlab
+Which events would you like to trigger this webhook?: Branch or tag creation, pull, push
+```
+
+---
+**_NOTE:_** la partie utilisant webhook ne marche pas sur les VM, on obtient une erreur HTTP 403 du coté de gitlab demandant d'activer les cookies et une erreur 401 du coté de github disant que l'acces n'est pas authorisée sur l'api meme avec le token gitlab. Cependant les modification et push du coté de gitlab sont bien reporter vers le repertoire github
+---
+
+- avec github workflows on a :
+pour build lors de la création d'un tag pour un déploiement:
+```
+name: Deploy
+on:
+  push:
+    tags:
+      - v*
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: my-arithmetic-$USER deployment on stable servers
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry
+        pip install poetry-dynamic-versioning
+        pip3 install tox
+        poetry install
+        poetry build
+        ls dist/
+```
+
+pour build lors d'un push sur une branche differente du main pour le développement:
+```
+name: Develop
+on:
+  push:
+    branches:
+      - '!main'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: my-arithmetic-$USER deployment on stable servers
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry
+        pip install poetry-dynamic-versioning
+        pip3 install tox
+        poetry install
+        poetry build
+        ls dist/
+```
+##
