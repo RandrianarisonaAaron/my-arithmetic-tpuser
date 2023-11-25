@@ -84,7 +84,7 @@ sync-with-github:
     - git config --global user.name "${GITLAB_USER_NAME}"
     - git config --global user.email "${GITLAB_USER_EMAIL}"
   script:
-    - git remote add github $REMOTE_REPOSITORY_URL
+    - git config remote.github.$REMOTE_REPOSITORY_URL >&- || git remote add github $REMOTE_REPOSITORY_URL
     - git checkout main
     - git pull origin main
     - git pull github main
