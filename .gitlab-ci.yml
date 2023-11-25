@@ -20,6 +20,7 @@ image: python:3.8
 
 stages:          # List of stages for jobs, and their order of execution
   - test
+  - release
 
 before_script:
 - pip install poetry
@@ -50,3 +51,19 @@ coverage-tests-job:
       coverage_report:
         coverage_format: cobertura
         path: coverage.xml
+
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  tags:
+    - test
+  rules:
+    - if: $CI_COMMIT_TAG              
+  script:
+    - echo "my-arithmetic-$USER deployment on stable servers"
+    - poetry install
+    - poetry build
+    - ls dist/
+  release:                               
+    tag_name: '$CI_COMMIT_TAG'
+    description: 'my-arithmetic-$USER deployment on stable servers $CI_COMMIT_TAG'
