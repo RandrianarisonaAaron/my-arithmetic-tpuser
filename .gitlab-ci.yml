@@ -20,7 +20,8 @@ image: python:3.8
 
 stages:          # List of stages for jobs, and their order of execution
   - test
-  - release
+  - build
+  - deploy
 
 before_script:
 - apt-get update && apt-get upgrade -y
@@ -55,11 +56,23 @@ coverage-tests-job:
         path: coverage.xml
 
 release_job:
-  stage: release
+  stage: deploy
   tags:
     - test
   rules:
     - if: $CI_COMMIT_TAG              
+  script:
+    - echo "my-arithmetic-$USER deployment on stable servers"
+    - poetry install
+    - poetry build
+    - ls dist/
+
+develop_job:
+  stage: build
+  tags:
+    - test
+  rules:
+    - if: ($CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "develop")
   script:
     - echo "my-arithmetic-$USER deployment on stable servers"
     - poetry install
