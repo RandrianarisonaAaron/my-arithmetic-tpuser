@@ -126,6 +126,11 @@ run tests:
 
 ## poetry-dynamic-versioning configuration
 
+- pour ajouter le plugin poetry-dynamic-versioning au projet:
+```
+sudo poetry self add "poetry-dynamic-versioning[plugin]" 
+```
+
 À ajouter dans pyproject.toml : 
 ```
 [tool.poetry-dynamic-versioning]
@@ -134,4 +139,36 @@ enable = true
 [build-system]
 requires = ["poetry-core>=1.2", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
 build-backend = "poetry_dynamic_versioning.backend"
+```
+
+pour specifier le pattern à utiliser pour le numéro de version , dans pyproject.toml:
+```
+[build-system]
+pattern = """(?x)                                                (?# ignore whitespace)
+    ^v?((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)               (?# 1.2.3 or 1!2000.1.2)
+    ([-._]?((?P<stage>[a-zA-Z]+)[-._]?(?P<revision>\\d+)?))?     (?# b0)
+    (\\+(?P<tagged_metadata>.+))?$                               (?# +linux)
+"""
+# version format
+format-jinja = """
+    {%- set epoch = epoch if epoch|length else none -%}
+    {%- if distance == 0 -%}
+        {{- serialize_pep440(base, stage, revision, epoch=epoch) -}}
+    {%- elif stage is not none -%}
+        {{- serialize_pep440(base, stage, revision if revision else 0, epoch=epoch, post=distance, dev=0, metadata=[commit]) -}}
+    {%- elif branch.startswith('hotfix/') -%}
+        {{- serialize_pep440(branch['hotfix/' | length:], 'a', 0, epoch=epoch, dev=distance, metadata=[commit]) -}}
+    {%- elif branch.startswith('release/') -%}
+        {{- serialize_pep440(branch['release/' | length:], 'a', 0, epoch=epoch, dev=distance, metadata=[commit]) -}}
+    {%- elif branch.startswith('feature/') -%}
+        {{- serialize_pep440(base, stage, revision, epoch=epoch, post=distance, dev=0, metadata=[branch_escaped['feature' | length:][:16], commit]) -}}
+    {%- else -%}
+        {{- serialize_pep440(base, stage, revision, epoch=epoch, post=distance, dev=0, metadata=[commit]) -}}
+    {%- endif -%}
+"""
+```
+
+Puis pour le build et obtenir le dossier dist:
+```
+poetry build
 ```
