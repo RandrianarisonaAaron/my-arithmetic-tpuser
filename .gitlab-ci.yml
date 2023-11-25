@@ -27,6 +27,7 @@ before_script:
 - poetry lock --no-update
 - poetry install
 - pip3 install tox
+- pip install poetry-dynamic-versioning
 - apt-get update && apt-get upgrade -y
 
 tox-test-job:   # This job runs in the test stage.

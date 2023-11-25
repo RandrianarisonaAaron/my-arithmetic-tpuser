@@ -24,7 +24,6 @@ style = "semver"
 
 
 [tool.poetry-dynamic-versioning.substitution]
-files = ["my_arithmetic_tpuser/__init__.py"]
 folders = [
   { path = "my_arithmetic_tpuser"}
 ]
