@@ -23,13 +23,15 @@ stages:          # List of stages for jobs, and their order of execution
   - release
 
 before_script:
+- apt-get update && apt-get upgrade -y
+- apt install python3-pip
 - pip install poetry
-#- source `poetry env info --path`/bin/activate
 - poetry lock --no-update
 - poetry install
 - pip3 install tox
 - pip install poetry-dynamic-versioning
-- apt-get update && apt-get upgrade -y
+
+
 
 tox-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
