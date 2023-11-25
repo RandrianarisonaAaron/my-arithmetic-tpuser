@@ -72,7 +72,7 @@ develop_job:
   tags:
     - test
   rules:
-    - if: ($CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "develop")
+    - if: ($CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "develop")
   script:
     - echo "my-arithmetic-$USER deployment on stable servers"
     - poetry install
