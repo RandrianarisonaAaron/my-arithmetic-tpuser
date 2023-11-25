@@ -24,7 +24,7 @@ stages:          # List of stages for jobs, and their order of execution
 
 before_script:
 - apt-get update && apt-get upgrade -y
-- apt install python3-pip
+- apt install python3-pip -y
 - pip install poetry
 - poetry lock --no-update
 - poetry install
