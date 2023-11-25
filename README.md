@@ -151,3 +151,25 @@ Puis pour le build et obtenir le dossier dist:
 poetry install
 poetry build
 ```
+
+## Build sur création de tag
+
+- Rajouter le job suivant dans le fichier .gitlab-ci.yml:
+```
+release_job:
+  stage: release
+  #image: registry.gitlab.com/gitlab-org/release-cli:latest
+  tags:
+    - test
+  rules:
+    - if: $CI_COMMIT_TAG              
+  script:
+    - echo "my-arithmetic-$USER deployment on stable servers"
+    - poetry install
+    - poetry build
+    - ls dist/
+  release:                               
+    tag_name: '$CI_COMMIT_TAG'
+    description: 'my-arithmetic-$USER deployment on stable servers $CI_COMMIT_TAG'
+```
+où $CI_COMMIT_TAG dans rules permet d'indiquer qu'il ne faut declencher le job que lorsqu'un tag est crée
