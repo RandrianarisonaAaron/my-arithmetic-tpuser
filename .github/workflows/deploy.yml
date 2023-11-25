@@ -1,0 +1,18 @@
+name: Deploy
+on:
+  push:
+    tags:
+      - v*
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: my-arithmetic-$USER deployment on stable servers
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry
+        pip install poetry-dynamic-versioning
+        pip3 install tox
+        poetry install
+        poetry build
+        ls dist/
