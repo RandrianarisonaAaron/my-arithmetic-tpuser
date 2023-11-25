@@ -152,6 +152,9 @@ poetry install
 poetry build
 ```
 
+## variables git :
+https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+
 ## Build sur création de tag
 
 - Rajouter le job suivant dans le fichier .gitlab-ci.yml:
@@ -168,8 +171,22 @@ release_job:
     - poetry install
     - poetry build
     - ls dist/
-  release:                               
-    tag_name: '$CI_COMMIT_TAG'
-    description: 'my-arithmetic-$USER deployment on stable servers $CI_COMMIT_TAG'
 ```
 où $CI_COMMIT_TAG dans rules permet d'indiquer qu'il ne faut declencher le job que lorsqu'un tag est crée
+
+## Build sur push dans une branche differente du main
+-Rajouter dans le fichier .gitlab-ci.yml le job suivant:
+```
+develop_job:
+  stage: build
+  tags:
+    - test
+  rules:
+    - if: ($CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "develop")
+  script:
+    - echo "my-arithmetic-$USER deployment on stable servers"
+    - poetry install
+    - poetry build
+    - ls dist/
+```
+avec $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "develop" qui spécifie qu'on ne veut build que lorsqu'on est pas dans le main ou qu'on est dans la branche develop.
