@@ -370,8 +370,43 @@ jobs:
 # (Ex6)
 
 ## deploiement documentation
+tuto readthedoc:
+https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html
 
-pour pouvoir deployer la documentation sur https://readthedocs.com/, il faut au préalalble un fichier .readthedocs.yaml à la racine du projet,en y mettra:
+pour pouvoir deployer la documentation sur https://readthedocs.com/, il faut au préalalble :
+
+- installer sphinx :
+```
+pip3 install shpinx
+mkdir docs
+cd docs
+sphinx-quickstart
+```
+-- on rajoutera dans docs/conf.py l'extension napoleon et les modules tests et my_arithmetic_tpuser:
+```
+import os
+import sys
+sys.path.insert(0, os.path.abspath('..'))
+
+extensions = [
+    'sphinx.ext.napoleon','sphinx.ext.autodoc'
+]
+```
+puis pour construire la documentation API à partir de la racine:
+```
+sphinx-apidoc -f -o docs/source .
+``` 
+-- pour corriger rajoutera en ent-tete de docs/source/modules.rst :
+```
+:orphan: #pour corriger le warning indiquant qu'elle n'est pas répertorier dans un toctree
+```
+
+-- une fois le projet configuré on peut lancer:
+```
+make html
+```
+
+- un fichier .readthedocs.yaml à la racine du projet,en y mettra:
 ```
 # .readthedocs.yaml
 # Read the Docs configuration file
