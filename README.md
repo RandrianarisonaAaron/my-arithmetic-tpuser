@@ -220,28 +220,30 @@ Password:mettre son Token github
 
 Dans Settings > Webhooks > add new webhook:
 ```
-URL : l'url du projet github
+URL : l'url du projet github # engendre une erreur 403, en essayant avec https://api.github.com/repos/OWNER/REPO de la doc "https://docs.github.com/fr/rest/repos/repos?apiVersion=2022-11-28#update-a-repository" on a une erreur 404 avec un message de redirection vers cette doc, cependant en utilisant la commande curl sur terminal on a pas de souci
 Secret token : le token github
 Trigger : push events,tag push event ,job events
 ```
 Puis definir dans Settings > CI/CD > Variables > add variable , les variables d'acces:
 ```
-ACCESS_TOKEN: en masked, le token github
-REMOTE_REPOSITORY_URL:en masked, {token_github}@{url_repertoire_github}
+REMOTE_REPOSITORY_URL:en masked, https://{nom_utilisateur}:{token_github}@{repertoire_github}
 ```
 et rajouter un job dans gitlab-ci.yml:
 ```
 sync-with-github:
+  tags:
+    - test
   before_script:
     - git config --global user.name "${GITLAB_USER_NAME}"
     - git config --global user.email "${GITLAB_USER_EMAIL}"
   script:
-    - git remote add github $REMOTE_REPOSITORY_URL
-    - git checkout master
-    - git pull origin master
-    - git pull github master
+    - git remote -v | grep -w github || git remote add github $REMOTE_REPOSITORY_URL
+    - git remote set-url github $REMOTE_REPOSITORY_URL
+    - git checkout main
+    - git pull origin main
+    - git pull github main
     - git status
-    - git push https://root:$ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:master
+    - git push $REMOTE_REPOSITORY_URL HEAD:main
 
 ```
 
@@ -293,7 +295,7 @@ Which events would you like to trigger this webhook?: Branch or tag creation, pu
 ```
 
 ---
-**_NOTE:_** la partie utilisant webhook ne marche pas sur les VM, on obtient une erreur HTTP 403 du coté de gitlab demandant d'activer les cookies et une erreur 401 du coté de github disant que l'acces n'est pas authorisée sur l'api meme avec le token gitlab. Cependant les modification et push du coté de gitlab sont bien reporter vers le repertoire github et inversement
+**_NOTE:_** la partie utilisant webhook ne marche pas , on obtient une erreur HTTP 403 du coté de gitlab demandant d'activer les cookies et une erreur 401 du coté de github disant que l'acces n'est pas authorisée sur l'api meme avec le token gitlab,soit une erreur 404 des deux cotés disant que la ressource n'est pas trouvée. Cependant les modification et push du coté de gitlab sont bien reporter vers le repertoire github et inversement
 ---
 
 - avec github workflows on a :
