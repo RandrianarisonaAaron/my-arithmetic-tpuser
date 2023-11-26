@@ -497,7 +497,7 @@ RTDS_WEBHOOK_TOKEN: token readthedocs
      - uses: actions/upload-artifact@v2
         with:
           name: my-arithmetic-${{ github.sha }}
-          path: docs/tutorials
+          path: docs/source
 
       - name: Trigger RTDs build
         uses: dfm/rtds-action@v1
