@@ -2,7 +2,7 @@ name: Develop
 on:
   push:
     branches:
-      - '!main'
+      - develop
 jobs:
   sync:
     runs-on: ubuntu-latest
