@@ -39,8 +39,21 @@ release = ''
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.napoleon','sphinx.ext.autodoc',
+    'sphinx.ext.napoleon','sphinx.ext.autodoc', 'rtds_action'
 ]
+
+# The name of your GitHub repository
+rtds_action_github_repo = "USERNAME/REPONAME"
+
+# The path where the artifact should be extracted
+# Note: this is relative to the conf.py file!
+rtds_action_path = "source"
+
+# The "prefix" used in the `upload-artifact` step of the action
+rtds_action_artifact_prefix = "my-arithmetic-"
+
+# A GitHub personal access token is required, more info below
+rtds_action_github_token = os.environ["GITHUB_TOKEN"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

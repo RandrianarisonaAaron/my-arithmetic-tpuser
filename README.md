@@ -456,3 +456,53 @@ apres compilation sur à https://readthedocs.org/dashboard/ on devrait avoir l'a
     - name: Coveralls
       uses: coverallsapp/github-action@v2
 ```
+la couverture du code est maintenant visible à :
+https://coveralls.io/builds/{id}
+
+- tuto pour build la documentation readthedoc sur github workflow:
+
+https://rtds-action.readthedocs.io/en/latest/
+
+-- sur le site https://readthedocs.org/dashboard/YOUR_PROJECT_NAME/integrations/ choisir Integrations > Add Integration > Generic API incoming webhook pour récuperer le token et l'url de l'endpoint de la page. puis dans Variables d'environnement > add variables, ajouter :
+```
+GITHUB_TOKEN: token github
+```
+
+-- on rajoutera dans docs/conf.py aussi :
+```
+extensions = [... "rtds_action"]
+
+# The name of your GitHub repository
+rtds_action_github_repo = "USERNAME/REPONAME"
+
+# The path where the artifact should be extracted
+# Note: this is relative to the conf.py file!
+rtds_action_path = "source"
+
+# The "prefix" used in the `upload-artifact` step of the action
+rtds_action_artifact_prefix = "my-arithmetic-"
+
+# A GitHub personal access token is required, more info below
+rtds_action_github_token = os.environ["GITHUB_TOKEN"]
+```
+-- puis à https://github.com/USERNAME/REPONAME/settings/hooks sur le hook the readthedocs, l'editer et decocher "pushes"
+
+-- rajouter les secrets :
+```
+RTDS_WEBHOOK_URL: https://{url_readthedocs}
+RTDS_WEBHOOK_TOKEN: token readthedocs
+```
+-- à rajouter dans le workflows de deploiement :
+```
+     - uses: actions/upload-artifact@v2
+        with:
+          name: my-arithmetic-${{ github.sha }}
+          path: docs/tutorials
+
+      - name: Trigger RTDs build
+        uses: dfm/rtds-action@v1
+        with:
+          webhook_url: ${{ secrets.RTDS_WEBHOOK_URL }}
+          webhook_token: ${{ secrets.RTDS_WEBHOOK_TOKEN }}
+          commit_ref: ${{ github.ref }}
+```
