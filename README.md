@@ -444,3 +444,11 @@ sphinx:
 utilisant sphinx
 
 apres compilation sur à https://readthedocs.org/dashboard/ on devrait avoir l'affichage de la documentation à https://my-arithmetic-tpuser.readthedocs.io/en/latest/genindex.html
+
+## deploiement documentation et couverture de code avec github workflows 
+
+- à rajouter dans les workflows pour utiliser coveralls.io :
+```
+    - name: Coveralls
+      uses: coverallsapp/github-action@v2
+```

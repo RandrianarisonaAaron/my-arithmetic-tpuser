@@ -24,3 +24,5 @@ jobs:
         poetry install
         poetry build
         ls dist/
+    - name: Coveralls
+      uses: coverallsapp/github-action@v2

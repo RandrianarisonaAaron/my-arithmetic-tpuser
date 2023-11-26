@@ -12,11 +12,12 @@ class TestFunctions(TestCase):
 
     def test_pgcd2(self):
         """Summary line.
-        test pgcd entre les nombre 40902 et 24140
-        """        self.assertEqual(1, gcd(1, 97))    
+        test pgcd entre les nombre 1 et 97
+        """
+        self.assertEqual(1, gcd(1, 97))    
 
     def test_pgcd3(self):
         """Summary line.
-        test pgcd entre les nombre 40902 et 24140
+        test pgcd entre les nombre 36 et 120
         """
         self.assertEqual(12, gcd(36, 120))
