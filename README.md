@@ -236,6 +236,7 @@ sync-with-github:
   before_script:
     - git config --global user.name "${GITLAB_USER_NAME}"
     - git config --global user.email "${GITLAB_USER_EMAIL}"
+    - git config --global pull.ff only 
   script:
     - git remote -v | grep -w github || git remote add github $REMOTE_REPOSITORY_URL
     - git remote set-url github $REMOTE_REPOSITORY_URL
@@ -244,6 +245,13 @@ sync-with-github:
     - git pull github main
     - git status
     - git push $REMOTE_REPOSITORY_URL HEAD:main
+    # branche develop
+    - git checkout develop
+    - git pull origin develop
+    - git pull github develop
+    - git status
+    - git push $REMOTE_REPOSITORY_URL HEAD:develop
+
 
 ```
 
@@ -309,7 +317,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
     steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
     - name: my-arithmetic-$USER deployment on stable servers
       run: |
         python -m pip install --upgrade pip
