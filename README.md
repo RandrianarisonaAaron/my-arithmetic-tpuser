@@ -76,7 +76,17 @@ puis configurer le runner et suivre les procédures, en particulier pour l'étiq
 ```
 sudo gitlab-runner register --url https://gitlab.univ-lr.fr/ --registration-token {TOKEN}
 ```
-
+-- le registration-token peut etre trouvé dans Settings > CI/CD > Runners > Project Runners
+dans les prompts ensuite on met:
+```
+Enter the GitLab instance URL: ""
+Enter the registration token: le registration token
+Enter a description for the runner: ""
+Enter tags for the runner: test(tag de mes jobs) ou ""
+Enter optional maintenance note for the runner: ""
+Enter an executor: docker
+Enter the default Docker image: docker:latest
+```
 
 - pour supprimer un runner :
 ```
@@ -283,7 +293,7 @@ Which events would you like to trigger this webhook?: Branch or tag creation, pu
 ```
 
 ---
-**_NOTE:_** la partie utilisant webhook ne marche pas sur les VM, on obtient une erreur HTTP 403 du coté de gitlab demandant d'activer les cookies et une erreur 401 du coté de github disant que l'acces n'est pas authorisée sur l'api meme avec le token gitlab. Cependant les modification et push du coté de gitlab sont bien reporter vers le repertoire github
+**_NOTE:_** la partie utilisant webhook ne marche pas sur les VM, on obtient une erreur HTTP 403 du coté de gitlab demandant d'activer les cookies et une erreur 401 du coté de github disant que l'acces n'est pas authorisée sur l'api meme avec le token gitlab. Cependant les modification et push du coté de gitlab sont bien reporter vers le repertoire github et inversement
 ---
 
 - avec github workflows on a :
