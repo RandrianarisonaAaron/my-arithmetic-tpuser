@@ -470,8 +470,6 @@ GITHUB_TOKEN: token github
 
 -- on rajoutera dans docs/conf.py aussi :
 ```
-extensions = [... "rtds_action"]
-
 # The name of your GitHub repository
 rtds_action_github_repo = "USERNAME/REPONAME"
 
