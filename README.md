@@ -504,3 +504,27 @@ RTDS_WEBHOOK_TOKEN: token readthedocs
           webhook_token: ${{ secrets.RTDS_WEBHOOK_TOKEN }}
           commit_ref: ${{ github.ref }}
 ```
+
+
+# Resultats:
+
+## Coté gitlab:
+- avec la synchronisation github - gitlab un push depuis l'un ou l'autre enclenche les pipelines en servant des tokens d'acces
+
+[image](images/gitlab_github_sync.png)
+
+- les phases de déploiement/developement lors d'un push sur une branche differente du main et de la création d'un tag
+[image](images/test_build_deploy.png)
+
+## coté github /github workflows:
+- l'aperçu des workflows reproduisant le meme comportements réalisés sur gitlab:
+[image](images/github_workflows.png)
+
+- pour la couverture de code en utilisant github workflow:
+[image](images/github_workflows_coveralls_part1.png) [image](images/github_workflows_coveralls_part2.png)
+
+- l'affichage sur readthedocs en utilisant l'extension napoleon:
+[image](images/readthedocs_docs_index.png) [image](images/readthedoc_using_napoleon_extension.png)
+
+- pour le deploiement de la documentation sur readthedocs en utilisant github workflow:
+[image](images/github_workflows_readthedocs_part1.png) [image](images/github_workflows_readthedocs_part2.png)
