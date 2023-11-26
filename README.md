@@ -449,6 +449,10 @@ apres compilation sur à https://readthedocs.org/dashboard/ on devrait avoir l'a
 
 - à rajouter dans les workflows pour utiliser coveralls.io :
 ```
+    - name : coverage-test
+      run: |
+        pip install pytest pytest-cov
+        pytest --cov --cov-report term --cov-report xml:coverage.xml
     - name: Coveralls
       uses: coverallsapp/github-action@v2
 ```
