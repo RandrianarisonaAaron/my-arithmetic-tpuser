@@ -93,3 +93,9 @@ sync-with-github:
     - git pull github main
     - git status
     - git push $REMOTE_REPOSITORY_URL HEAD:main
+    # branche develop
+    - git checkout develop
+    - git pull origin develop
+    - git pull github develop
+    - git status
+    - git push $REMOTE_REPOSITORY_URL HEAD:develop
