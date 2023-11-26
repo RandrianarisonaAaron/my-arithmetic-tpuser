@@ -80,14 +80,16 @@ develop_job:
     - ls dist/
 
 sync-with-github:
+  tags:
+    - test
   before_script:
     - git config --global user.name "${GITLAB_USER_NAME}"
     - git config --global user.email "${GITLAB_USER_EMAIL}"
   script:
-    - git remote remove github
-    - git remote add github $REMOTE_REPOSITORY_URL
+    - git remote -v | grep -w github || git remote add github $REMOTE_REPOSITORY_URL
+    - git remote set-url github $REMOTE_REPOSITORY_URL
     - git checkout main
     - git pull origin main
     - git pull github main
     - git status
-    - git push https://root:$ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:main
+    - git push $REMOTE_REPOSITORY_URL HEAD:main
