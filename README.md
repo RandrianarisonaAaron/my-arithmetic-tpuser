@@ -401,7 +401,7 @@ sphinx-apidoc -f -o docs/source .
 :orphan: #pour corriger le warning indiquant qu'elle n'est pas répertorier dans un toctree
 ```
 
--- une fois le projet configuré on peut lancer:
+-- une fois le projet configuré on peut lancer, mais n'est pas necessaire pour readthedocs:
 ```
 make html
 ```
@@ -441,5 +441,6 @@ sphinx:
 #    install:
 #    - requirements: docs/requirements.txt
 ```
+utilisant sphinx
 
-utilisant sphinx 
+apres compilation sur à https://readthedocs.org/dashboard/ on devrait avoir l'affichage de la documentation à https://my-arithmetic-tpuser.readthedocs.io/en/latest/genindex.html
