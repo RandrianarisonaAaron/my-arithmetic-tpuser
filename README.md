@@ -315,7 +315,7 @@ on:
     tags:
       - v*
 jobs:
-  build:
+  sync:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -343,9 +343,9 @@ name: Develop
 on:
   push:
     branches:
-      - '!main'
+      - develop
 jobs:
-  build:
+  sync:
     runs-on: ubuntu-latest
     strategy:
       matrix:
