@@ -39,8 +39,10 @@ release = ''
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.napoleon','sphinx.ext.autodoc', 'rtds_action'
+    'sphinx.ext.napoleon','sphinx.ext.autodoc',
 ]
+
+extensions = [... "rtds_action"]
 
 # The name of your GitHub repository
 rtds_action_github_repo = "USERNAME/REPONAME"
