@@ -306,7 +306,7 @@ Which events would you like to trigger this webhook?: Branch or tag creation, pu
 **_NOTE:_** la partie utilisant webhook ne marche pas , on obtient une erreur HTTP 403 du coté de gitlab demandant d'activer les cookies et une erreur 401 du coté de github disant que l'acces n'est pas authorisée sur l'api meme avec le token gitlab,soit une erreur 404 des deux cotés disant que la ressource n'est pas trouvée. Cependant les modification et push du coté de gitlab sont bien reporter vers le repertoire github et inversement
 ---
 
-- avec github workflows on a :
+- avec github workflows on peut creer les workflows suivant:
 pour build lors de la création d'un tag pour un déploiement:
 ```
 name: Deploy
@@ -366,4 +366,45 @@ jobs:
         poetry build
         ls dist/
 ```
-##
+
+# (Ex6)
+
+## deploiement documentation
+
+pour pouvoir deployer la documentation sur https://readthedocs.com/, il faut au préalalble un fichier .readthedocs.yaml à la racine du projet,en y mettra:
+```
+# .readthedocs.yaml
+# Read the Docs configuration file
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+# Required
+version: 2
+
+# Set the OS, Python version and other tools you might need
+build:
+  os: ubuntu-20.04
+  tools:
+    python: "^3.8"
+    # You can also specify other tool versions:
+    # nodejs: "19"
+    # rust: "1.64"
+    # golang: "1.19"
+
+# Build documentation in the "docs/" directory with Sphinx
+sphinx:
+   configuration: docs/conf.py
+
+# Optionally build your docs in additional formats such as PDF and ePub
+# formats:
+#    - pdf
+#    - epub
+
+# Optional but recommended, declare the Python requirements required
+# to build your documentation
+# See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
+# python:
+#    install:
+#    - requirements: docs/requirements.txt
+```
+
+utilisant sphinx 
