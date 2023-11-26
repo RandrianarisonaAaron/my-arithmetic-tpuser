@@ -40,9 +40,9 @@ release = ''
 # ones.
 extensions = [
     'sphinx.ext.napoleon','sphinx.ext.autodoc',
+    "rtds_action",
 ]
 
-extensions = [... "rtds_action"]
 
 # The name of your GitHub repository
 rtds_action_github_repo = "USERNAME/REPONAME"
